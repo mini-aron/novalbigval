@@ -1,5 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { prisma } from "../db/prisma.js";
+import { cancelAccount } from "../scheduler/wishlistScheduler.js";
 import type { Command } from "../types.js";
 import { autocompleteAccounts, resolveAccount } from "./_shared.js";
 
@@ -25,6 +26,7 @@ export const command: Command = {
       return;
     }
 
+    cancelAccount(resolved.account.id);
     await prisma.riotAccount.delete({ where: { id: resolved.account.id } });
     await interaction.reply({
       content: `**${resolved.account.riotUsername}** 계정 연동이 해제되었습니다. 저장된 세션 정보도 함께 삭제되었습니다.`,

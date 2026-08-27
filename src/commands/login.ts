@@ -1,6 +1,7 @@
 import { SlashCommandBuilder, type DMChannel } from "discord.js";
 import { login, submitMfa } from "../riot/authClient.js";
 import { AccountLimitError, AccountOwnedByAnotherUserError, finalizeLogin } from "../services/accountService.js";
+import { scheduleAccount } from "../scheduler/wishlistScheduler.js";
 import type { Command } from "../types.js";
 
 async function ask(
@@ -96,6 +97,7 @@ export const command: Command = {
 
     try {
       const account = await finalizeLogin(userId, tokens, ssid);
+      scheduleAccount(account.id);
       await dm.send(
         `✅ **${account.riotUsername}** 계정 연동이 완료되었습니다. /shop 명령어로 상점을 조회해보세요.`
       );

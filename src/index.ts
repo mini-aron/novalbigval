@@ -1,6 +1,7 @@
 import "dotenv/config";
 import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
 import { commands } from "./commands/index.js";
+import { initScheduler, startAllSchedules } from "./scheduler/wishlistScheduler.js";
 
 const client = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages],
@@ -9,6 +10,8 @@ const client = new Client({
 
 client.once(Events.ClientReady, (c) => {
   console.log(`로그인 완료: ${c.user.tag}`);
+  initScheduler(client);
+  void startAllSchedules();
 });
 
 client.on(Events.InteractionCreate, async (interaction) => {
