@@ -32,6 +32,10 @@ const REGION_TO_SHARD: Record<string, string> = {
   kr: "kr",
 };
 
+export function regionToShard(region: string): string {
+  return REGION_TO_SHARD[region] ?? region;
+}
+
 export async function fetchRegion(
   accessToken: string,
   idToken: string

@@ -1,33 +1,13 @@
 import { SlashCommandBuilder, type DMChannel } from "discord.js";
-import { login, submitMfa } from "../riot/authClient.js";
-import { AccountLimitError, AccountOwnedByAnotherUserError, finalizeLogin } from "../services/accountService.js";
 import { scheduleAccount } from "../scheduler/wishlistScheduler.js";
+import { AccountLimitError, AccountOwnedByAnotherUserError, finalizeLogin } from "../services/accountService.js";
 import type { Command } from "../types.js";
-
-async function ask(
-  dm: DMChannel,
-  userId: string,
-  prompt: string,
-  timeoutMs = 120_000
-): Promise<string | null> {
-  await dm.send(prompt);
-  try {
-    const collected = await dm.awaitMessages({
-      filter: (m) => m.author.id === userId,
-      max: 1,
-      time: timeoutMs,
-      errors: ["time"],
-    });
-    return collected.first()?.content ?? null;
-  } catch {
-    return null;
-  }
-}
+import { runDmLogin } from "./_dmLogin.js";
 
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("login")
-    .setDescription("라이엇 계정을 DM으로 연동합니다."),
+    .setDescription("라이엇 계정을 DM으로 연동합니다 (개인 상점 조회용)."),
 
   async execute(interaction) {
     await interaction.reply({
@@ -46,57 +26,11 @@ export const command: Command = {
       return;
     }
 
-    const userId = interaction.user.id;
-
-    const username = await ask(dm, userId, "라이엇 계정 아이디를 입력해주세요.");
-    if (!username) return void dm.send("시간이 초과되었습니다. /login 을 다시 실행해주세요.");
-
-    const password = await ask(
-      dm,
-      userId,
-      "비밀번호를 입력해주세요.\n(입력 후 이 메시지는 직접 삭제해주세요 — 봇은 DM에서 다른 사람의 메시지를 삭제할 권한이 없습니다.)"
-    );
-    if (!password) return void dm.send("시간이 초과되었습니다. /login 을 다시 실행해주세요.");
-
-    const result = await login(username, password);
-
-    if (result.status === "invalid_credentials") {
-      await dm.send("아이디 또는 비밀번호가 올바르지 않습니다.");
-      return;
-    }
-    if (result.status === "rate_limited") {
-      await dm.send("Riot 서버가 요청을 제한하고 있습니다. 잠시 후 다시 시도해주세요.");
-      return;
-    }
-
-    let tokens;
-    let ssid;
-
-    if (result.status === "mfa_required") {
-      await dm.send(
-        `2단계 인증코드가 ${result.email || "등록된 이메일"}로 발송되었습니다. 2분 이내에 입력해주세요.`
-      );
-      const code = await ask(dm, userId, "인증코드를 입력해주세요.", 120_000);
-      if (!code) return void dm.send("시간이 초과되었습니다. /login 을 다시 실행해주세요.");
-
-      const mfaResult = await submitMfa(result.cookieHeader, code);
-      if (mfaResult.status !== "success") {
-        await dm.send(
-          mfaResult.status === "invalid_code"
-            ? "인증코드가 올바르지 않습니다. /login 을 다시 실행해주세요."
-            : "인증 세션이 만료되었습니다. /login 을 다시 실행해주세요."
-        );
-        return;
-      }
-      tokens = mfaResult.tokens;
-      ssid = mfaResult.ssid;
-    } else {
-      tokens = result.tokens;
-      ssid = result.ssid;
-    }
+    const outcome = await runDmLogin(dm, interaction.user.id);
+    if (outcome.status === "aborted") return;
 
     try {
-      const account = await finalizeLogin(userId, tokens, ssid);
+      const account = await finalizeLogin(interaction.user.id, outcome.tokens, outcome.ssid);
       scheduleAccount(account.id);
       await dm.send(
         `✅ **${account.riotUsername}** 계정 연동이 완료되었습니다. /shop 명령어로 상점을 조회해보세요.`

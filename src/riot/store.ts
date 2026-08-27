@@ -1,4 +1,4 @@
-import { getClientPlatformHeader, getClientVersion } from "./clientVersion.js";
+import { buildPdHeaders } from "./pdHeaders.js";
 
 export interface StorefrontResult {
   skinLevelUuids: string[];
@@ -18,24 +18,11 @@ export async function fetchStorefront(params: {
   puuid: string;
   shard: string;
 }): Promise<StorefrontResult> {
-  const [clientVersion, clientPlatform] = await Promise.all([
-    getClientVersion(),
-    Promise.resolve(getClientPlatformHeader()),
-  ]);
+  const headers = await buildPdHeaders(params);
 
   const response = await fetch(
     `https://pd.${params.shard}.a.pvp.net/store/v3/storefront/${params.puuid}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${params.accessToken}`,
-        "X-Riot-Entitlements-JWT": params.entitlementsToken,
-        "X-Riot-ClientVersion": clientVersion,
-        "X-Riot-ClientPlatform": clientPlatform,
-        "Content-Type": "application/json",
-      },
-      body: "{}",
-    }
+    { method: "POST", headers, body: "{}" }
   );
 
   if (!response.ok) {

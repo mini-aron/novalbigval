@@ -1,6 +1,9 @@
 import type { AutocompleteInteraction, ChatInputCommandInteraction } from "discord.js";
 import type { RiotAccount } from "@prisma/client";
 import { prisma } from "../db/prisma.js";
+import { NoServiceAccountError } from "../services/serviceAccountSession.js";
+import { SessionExpiredError } from "../services/riotSession.js";
+import { InvalidRiotIdError, PlayerNotFoundError } from "../services/statsService.js";
 
 export async function autocompleteAccounts(interaction: AutocompleteInteraction): Promise<void> {
   const focused = interaction.options.getFocused().toLowerCase();
@@ -33,4 +36,15 @@ export async function resolveAccount(
       .map((a) => a.riotUsername)
       .join(", ")}`,
   };
+}
+
+// /rank, /matches가 공유하는 에러 → 사용자 메시지 변환.
+export function resolveStatsErrorMessage(err: unknown): string {
+  if (err instanceof InvalidRiotIdError || err instanceof PlayerNotFoundError) return err.message;
+  if (err instanceof NoServiceAccountError) return err.message;
+  if (err instanceof SessionExpiredError) {
+    return "전적 조회용 계정 세션이 만료되었습니다. 관리자가 /servicelogin 으로 다시 연동해야 합니다.";
+  }
+  console.error(err);
+  return "조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
 }
