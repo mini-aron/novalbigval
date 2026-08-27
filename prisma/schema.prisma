@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  discordId    String        @id
+  createdAt    DateTime      @default(now())
+  riotAccounts RiotAccount[]
+}
+
+model RiotAccount {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [discordId], onDelete: Cascade)
+  puuid            String   @unique
+  region           String
+  shard            String
+  riotUsername     String
+  encryptedCookie  String
+  lastLoginAt      DateTime @default(now())
+  wishlistItems    WishlistItem[]
+
+  @@index([userId])
+}
+
+model WishlistItem {
+  id            String      @id @default(cuid())
+  riotAccountId String
+  riotAccount   RiotAccount @relation(fields: [riotAccountId], references: [id], onDelete: Cascade)
+  skinUuid      String
+  skinName      String
+  addedAt       DateTime    @default(now())
+
+  @@unique([riotAccountId, skinUuid])
+  @@index([riotAccountId])
+}
