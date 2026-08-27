@@ -31,3 +31,17 @@ export async function getSkinLevels(uuids: string[]): Promise<SkinLevelMeta[]> {
   const map = await loadSkinLevels();
   return uuids.map((uuid) => map.get(uuid)).filter((v): v is SkinLevelMeta => Boolean(v));
 }
+
+// /wishlist add 자동완성용 이름 검색.
+export async function searchSkinLevels(query: string, limit = 25): Promise<SkinLevelMeta[]> {
+  const map = await loadSkinLevels();
+  const needle = query.trim().toLowerCase();
+  const results: SkinLevelMeta[] = [];
+  for (const meta of map.values()) {
+    if (!needle || meta.displayName.toLowerCase().includes(needle)) {
+      results.push(meta);
+      if (results.length >= limit) break;
+    }
+  }
+  return results;
+}
