@@ -6,7 +6,7 @@ import type { Command } from "../types.js";
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("accounts")
-    .setDescription("연동된 라이엇 계정 목록을 확인합니다."),
+    .setDescription("공주가 기억하고 있는 계정 목록을 보여줍니다."),
 
   async execute(interaction) {
     const accounts = await prisma.riotAccount.findMany({
@@ -16,16 +16,16 @@ export const command: Command = {
 
     if (accounts.length === 0) {
       await interaction.reply({
-        content: "연동된 라이엇 계정이 없습니다. /login 으로 먼저 연동해주세요.",
+        content: "아직 이어진 계정이 없는걸요. /login 부터 해주실래요?",
         ephemeral: true,
       });
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle("연동된 계정")
+      .setTitle("공주가 기억하는 계정")
       .setColor(0xd81f30)
-      .setDescription(`${accounts.length} / ${MAX_ACCOUNTS_PER_USER}개 사용 중`)
+      .setDescription(`${accounts.length} / ${MAX_ACCOUNTS_PER_USER}개를 기억하고 있어요`)
       .addFields(
         accounts.map((a) => ({
           name: a.riotUsername,

@@ -8,14 +8,14 @@ export const MAX_ACCOUNTS_PER_USER = 3;
 
 export class AccountLimitError extends Error {
   constructor() {
-    super(`계정은 유저당 최대 ${MAX_ACCOUNTS_PER_USER}개까지 연동할 수 있습니다. /accounts 로 기존 계정을 확인 후 /logout 으로 정리해주세요.`);
+    super(`공주가 챙길 수 있는 계정은 한 사람당 최대 ${MAX_ACCOUNTS_PER_USER}개뿐이에요. /accounts 로 확인하고 /logout 으로 하나 정리해주실래요?`);
     this.name = "AccountLimitError";
   }
 }
 
 export class AccountOwnedByAnotherUserError extends Error {
   constructor() {
-    super("이미 다른 디스코드 계정에 연동되어 있는 라이엇 계정입니다.");
+    super("어머, 그 라이엇 계정은 이미 다른 분과 연이 닿아있는걸요.");
     this.name = "AccountOwnedByAnotherUserError";
   }
 }

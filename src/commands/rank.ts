@@ -6,7 +6,7 @@ import { resolveStatsErrorMessage } from "./_shared.js";
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("rank")
-    .setDescription("닉네임#태그로 현재 랭크를 조회합니다.")
+    .setDescription("닉네임#태그로 현재 랭크를 살펴봐드립니다.")
     .addStringOption((opt) =>
       opt.setName("riotid").setDescription("닉네임#태그 (예: Player#KR1)").setRequired(true)
     ) as SlashCommandBuilder,
@@ -22,7 +22,7 @@ export const command: Command = {
         .setColor(0xd81f30);
 
       if (!rank.hasCompetitiveData) {
-        embed.setDescription("경쟁전 기록이 없습니다.");
+        embed.setDescription("아직 경쟁전 기록이 없는걸요.");
       } else {
         embed.setDescription(`**${rank.tierName}** · ${rank.rr} RR`);
         if (rank.tierIcon) embed.setThumbnail(rank.tierIcon);

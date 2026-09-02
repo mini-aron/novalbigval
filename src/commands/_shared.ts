@@ -19,20 +19,20 @@ export async function resolveAccount(
 ): Promise<{ account: RiotAccount } | { error: string }> {
   const accounts = await prisma.riotAccount.findMany({ where: { userId: interaction.user.id } });
   if (accounts.length === 0) {
-    return { error: "연동된 라이엇 계정이 없습니다. /login 으로 먼저 연동해주세요." };
+    return { error: "아직 이어진 계정이 없는걸요. /login 부터 해주실래요?" };
   }
 
   const specifiedId = interaction.options.getString(optionName);
   if (specifiedId) {
     const account = accounts.find((a) => a.id === specifiedId);
-    if (!account) return { error: "해당 계정을 찾을 수 없습니다. /accounts 로 확인해주세요." };
+    if (!account) return { error: "그 계정은 공주 목록에 없어요. /accounts 로 다시 확인해주세요." };
     return { account };
   }
 
   if (accounts.length === 1) return { account: accounts[0] };
 
   return {
-    error: `연동된 계정이 여러 개입니다. account 옵션으로 지정해주세요: ${accounts
+    error: `계정이 여러 개라 헷갈리는걸요. account 옵션으로 콕 집어주세요: ${accounts
       .map((a) => a.riotUsername)
       .join(", ")}`,
   };
@@ -43,8 +43,8 @@ export function resolveStatsErrorMessage(err: unknown): string {
   if (err instanceof InvalidRiotIdError || err instanceof PlayerNotFoundError) return err.message;
   if (err instanceof NoServiceAccountError) return err.message;
   if (err instanceof SessionExpiredError) {
-    return "전적 조회용 계정 세션이 만료되었습니다. 관리자가 /servicelogin 으로 다시 연동해야 합니다.";
+    return "조회용 세션이 잠들어버렸어요. 관리자님이 /servicelogin 으로 다시 깨워주셔야 해요.";
   }
   console.error(err);
-  return "조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+  return "조회하다가 조금 삐끗했어요. 잠시 후 다시 시도해주실래요?";
 }

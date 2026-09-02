@@ -28,6 +28,7 @@ src/
   commands/            명령어 핸들러
     login/logout/accounts/shop/wishlist   대발이 (개인 상점)
     servicelogin/rank/matches             노발이 (전적/랭크)
+    princess                              세이지 공주님을 모시는 방법 (플레이버)
   riot/                Riot 인증(비공식) + 상점/전적 API 클라이언트, 공식 account-v1 조회
   db/                  Prisma 클라이언트, 암호화 유틸
   services/            DB ↔ Riot API를 잇는 서비스 레이어

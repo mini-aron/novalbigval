@@ -7,7 +7,7 @@ import { autocompleteAccounts, resolveAccount } from "./_shared.js";
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("logout")
-    .setDescription("연동된 라이엇 계정을 삭제합니다.")
+    .setDescription("이어둔 라이엇 계정을 정리합니다.")
     .addStringOption((opt) =>
       opt
         .setName("account")
@@ -29,7 +29,7 @@ export const command: Command = {
     cancelAccount(resolved.account.id);
     await prisma.riotAccount.delete({ where: { id: resolved.account.id } });
     await interaction.reply({
-      content: `**${resolved.account.riotUsername}** 계정 연동이 해제되었습니다. 저장된 세션 정보도 함께 삭제되었습니다.`,
+      content: `**${resolved.account.riotUsername}**, 이제 놓아드릴게요. 저장해뒀던 세션도 깨끗이 지웠어요.`,
       ephemeral: true,
     });
   },

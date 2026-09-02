@@ -8,7 +8,7 @@ const RESULT_LABEL: Record<string, string> = { win: "🟢 승리", loss: "🔴 �
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("matches")
-    .setDescription("닉네임#태그로 최근 전적을 조회합니다.")
+    .setDescription("닉네임#태그로 최근 전적을 살펴봐드립니다.")
     .addStringOption((opt) =>
       opt.setName("riotid").setDescription("닉네임#태그 (예: Player#KR1)").setRequired(true)
     )
@@ -25,7 +25,7 @@ export const command: Command = {
       const result = await getRecentMatches(riotId, count);
 
       if (result.matches.length === 0) {
-        await interaction.editReply(`**${result.gameName}#${result.tagLine}**의 최근 전적이 없습니다.`);
+        await interaction.editReply(`**${result.gameName}#${result.tagLine}**의 최근 전적은 아직 없는걸요.`);
         return;
       }
 

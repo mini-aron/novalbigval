@@ -15,11 +15,11 @@ function accountOption(opt: import("discord.js").SlashCommandStringOption) {
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("wishlist")
-    .setDescription("관심 스킨을 등록/해제/조회합니다.")
+    .setDescription("공주에게 관심 스킨을 맡기고 살펴봅니다.")
     .addSubcommand((sub) =>
       sub
         .setName("add")
-        .setDescription("관심 스킨을 등록합니다.")
+        .setDescription("관심 스킨을 공주에게 맡깁니다.")
         .addStringOption((opt) =>
           opt.setName("skin").setDescription("스킨 이름").setAutocomplete(true).setRequired(true)
         )
@@ -28,7 +28,7 @@ export const command: Command = {
     .addSubcommand((sub) =>
       sub
         .setName("remove")
-        .setDescription("관심 스킨을 해제합니다.")
+        .setDescription("맡긴 스킨을 다시 거둡니다.")
         .addStringOption((opt) =>
           opt.setName("skin").setDescription("스킨 이름").setAutocomplete(true).setRequired(true)
         )
@@ -37,7 +37,7 @@ export const command: Command = {
     .addSubcommand((sub) =>
       sub
         .setName("list")
-        .setDescription("등록된 관심 스킨 목록을 봅니다.")
+        .setDescription("공주가 맡아둔 스킨 목록을 봅니다.")
         .addStringOption(accountOption)
     ),
 
@@ -90,7 +90,7 @@ export const command: Command = {
 
       await addToWishlist(account.id, skinUuid, skinName);
       await interaction.reply({
-        content: `**${skinName}** 을(를) **${account.riotUsername}** 위시리스트에 등록했습니다.`,
+        content: `**${skinName}**, 공주가 잘 기억해둘게요. **${account.riotUsername}**에 뜨면 바로 알려드릴게요!`,
         ephemeral: true,
       });
       return;
@@ -99,21 +99,21 @@ export const command: Command = {
     if (subcommand === "remove") {
       const skinUuid = interaction.options.getString("skin", true);
       await removeFromWishlist(account.id, skinUuid);
-      await interaction.reply({ content: "위시리스트에서 제거했습니다.", ephemeral: true });
+      await interaction.reply({ content: "네, 이제 그건 잊어드릴게요.", ephemeral: true });
       return;
     }
 
     const items = await listWishlist(account.id);
     if (items.length === 0) {
       await interaction.reply({
-        content: `**${account.riotUsername}** 계정에 등록된 관심 스킨이 없습니다.`,
+        content: `**${account.riotUsername}**엔 아직 맡아둔 스킨이 없는걸요.`,
         ephemeral: true,
       });
       return;
     }
 
     const embed = new EmbedBuilder()
-      .setTitle(`${account.riotUsername}의 위시리스트`)
+      .setTitle(`${account.riotUsername}을 위해 공주가 맡아둔 것들`)
       .setColor(0xd81f30)
       .setDescription(items.map((i) => `• ${i.skinName}`).join("\n"));
 

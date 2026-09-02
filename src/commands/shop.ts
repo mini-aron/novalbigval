@@ -7,7 +7,7 @@ import { autocompleteAccounts, resolveAccount } from "./_shared.js";
 export const command: Command = {
   data: new SlashCommandBuilder()
     .setName("shop")
-    .setDescription("오늘의 개인 상점을 조회합니다.")
+    .setDescription("오늘 공주가 봐줄 개인 상점을 알려드립니다.")
     .addStringOption((opt) =>
       opt
         .setName("account")
@@ -40,17 +40,17 @@ export const command: Command = {
       );
 
       await interaction.editReply({
-        content: `**${resolved.account.riotUsername}**의 오늘 상점 · 다음 갱신 <t:${resetAt}:R>`,
+        content: `**${resolved.account.riotUsername}**의 오늘 상점, 공주가 챙겨왔어요 · 다음 갱신 <t:${resetAt}:R>`,
         embeds,
       });
     } catch (err) {
       if (err instanceof SessionExpiredError) {
         await interaction.editReply(
-          "저장된 세션이 만료되었습니다. /logout 후 /login 으로 다시 연동해주세요."
+          "세션이 잠들어버렸어요. /logout 후 /login 으로 다시 깨워주실래요?"
         );
         return;
       }
-      await interaction.editReply("상점 조회 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+      await interaction.editReply("상점을 보다가 조금 삐끗했어요. 잠시 후 다시 시도해주실래요?");
     }
   },
 };

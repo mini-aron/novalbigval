@@ -8,14 +8,14 @@ import { getServiceSession } from "./serviceAccountSession.js";
 
 export class PlayerNotFoundError extends Error {
   constructor() {
-    super("해당 닉네임#태그의 플레이어를 찾을 수 없습니다.");
+    super("그런 플레이어는 공주도 처음 들어보는걸요. 닉네임#태그를 다시 확인해주세요.");
     this.name = "PlayerNotFoundError";
   }
 }
 
 export class InvalidRiotIdError extends Error {
   constructor() {
-    super("닉네임#태그 형식으로 입력해주세요. 예: Player#KR1");
+    super("닉네임#태그 형식으로 알려주셔야 찾아드릴 수 있어요. 예: Player#KR1");
     this.name = "InvalidRiotIdError";
   }
 }

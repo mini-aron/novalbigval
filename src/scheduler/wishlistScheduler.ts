@@ -52,7 +52,7 @@ async function checkAndReschedule(riotAccountId: string): Promise<void> {
     try {
       const user = await botClient.users.fetch(account.userId);
       await user.send(
-        `🔔 **${account.riotUsername}** 상점에 위시리스트 스킨이 떴습니다!\n` +
+        `🔔 **${account.riotUsername}** 상점에 기다리던 스킨이 떴어요! 공주가 바로 알려드리는 거예요.\n` +
           matches.map((m) => `• ${m.skinName}`).join("\n")
       );
     } catch (err) {
