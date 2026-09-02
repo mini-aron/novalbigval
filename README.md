@@ -1,9 +1,9 @@
-# 대발이 (daebal)
+# 세이지곤듀 (sage-gondyu)
 
-발로란트 디스코드 봇. 한 봇 안에 기능별로 두 가지 이름을 붙였다.
+세이지 공주님 컨셉의 발로란트 디스코드 봇. 기능은 두 갈래지만 말하는 인격은 하나(세이지곤듀)다.
 
-- **대발이** — 라이엇 계정을 연동해 개인 데일리 상점을 조회하고, 위시리스트에 등록한 스킨이 뜨면 DM으로 알려준다. (`/login`, `/shop`, `/wishlist`)
-- **노발이** — 닉네임#태그만으로 아무 플레이어의 랭크/최근 전적을 조회한다. (`/rank`, `/matches`) 로그인 불필요 — 운영자가 등록해둔 공용 계정 세션으로 대신 조회한다.
+- **개인 상점** — 라이엇 계정을 연동해 개인 데일리 상점을 조회하고, 위시리스트에 등록한 스킨이 뜨면 DM으로 알려준다. (`/login`, `/shop`, `/wishlist`)
+- **전적/랭크 조회** — 닉네임#태그만으로 아무 플레이어의 랭크/최근 전적을 조회한다. (`/rank`, `/matches`) 로그인 불필요 — 운영자가 등록해둔 공용 계정 세션으로 대신 조회한다.
 
 설계 배경과 전체 명세는 프로젝트 킥오프 시 정리한 명세 문서를 참고.
 
@@ -17,7 +17,7 @@ npm run deploy-commands # DISCORD_DEV_GUILD_ID 설정 시 해당 길드에 즉�
 npm run dev
 ```
 
-전적 조회(노발이)를 쓰려면 봇 운영자가 한 번 `/servicelogin`(관리자 전용)으로 조회용 라이엇 계정을 등록해야 한다. 개인 상점 조회(대발이)는 유저 각자 `/login`으로 자기 계정을 연동한다.
+전적 조회를 쓰려면 봇 운영자가 한 번 `/servicelogin`(관리자 전용)으로 조회용 라이엇 계정을 등록해야 한다. 개인 상점 조회는 유저 각자 `/login`으로 자기 계정을 연동한다.
 
 ## 구조
 
@@ -26,8 +26,8 @@ src/
   index.ts            봇 진입점
   deployCommands.ts    슬래시 커맨드 등록 스크립트
   commands/            명령어 핸들러
-    login/logout/accounts/shop/wishlist   대발이 (개인 상점)
-    servicelogin/rank/matches             노발이 (전적/랭크)
+    login/logout/accounts/shop/wishlist   개인 상점
+    servicelogin/rank/matches             전적/랭크 조회
     princess                              세이지 공주님을 모시는 방법 (플레이버)
   riot/                Riot 인증(비공식) + 상점/전적 API 클라이언트, 공식 account-v1 조회
   db/                  Prisma 클라이언트, 암호화 유틸

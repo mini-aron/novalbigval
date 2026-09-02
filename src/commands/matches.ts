@@ -1,6 +1,7 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { getRecentMatches } from "../services/statsService.js";
 import type { Command } from "../types.js";
+import { princessEmbed } from "./_embed.js";
 import { resolveStatsErrorMessage } from "./_shared.js";
 
 const RESULT_LABEL: Record<string, string> = { win: "🟢 승리", loss: "🔴 패배", unknown: "⚪ 알 수 없음" };
@@ -29,9 +30,8 @@ export const command: Command = {
         return;
       }
 
-      const embed = new EmbedBuilder()
+      const embed = princessEmbed()
         .setTitle(`${result.gameName}#${result.tagLine} 최근 전적`)
-        .setColor(0xd81f30)
         .setDescription(
           result.matches
             .map((m) => {

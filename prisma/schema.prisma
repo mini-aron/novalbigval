@@ -40,7 +40,7 @@ model WishlistItem {
   @@index([riotAccountId])
 }
 
-// 노발이(전적 조회) 기능 전용. 개인 상점과 달리 전적/랭크는 공개 정보라
+// 전적 조회 기능 전용. 개인 상점과 달리 전적/랭크는 공개 정보라
 // 유저마다 로그인시킬 필요 없이, 봇이 보유한 계정 하나의 세션으로 임의의
 // 플레이어를 조회한다. 통상 단일 row(운영자가 /servicelogin 으로 등록).
 model ServiceAccount {

@@ -1,0 +1,15 @@
+[Unit]
+Description=sage-gondyu discord bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/novalbigval
+ExecStart=/usr/bin/node dist/index.js
+Restart=always
+RestartSec=5
+User=sage-gondyu
+
+[Install]
+WantedBy=multi-user.target

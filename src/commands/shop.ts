@@ -1,7 +1,8 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { getShopForAccount } from "../services/shopService.js";
 import { SessionExpiredError } from "../services/riotSession.js";
 import type { Command } from "../types.js";
+import { princessEmbed } from "./_embed.js";
 import { autocompleteAccounts, resolveAccount } from "./_shared.js";
 
 export const command: Command = {
@@ -32,16 +33,14 @@ export const command: Command = {
       const shop = await getShopForAccount(resolved.account);
       const resetAt = Math.floor(Date.now() / 1000) + shop.secondsUntilReset;
 
-      const embeds = shop.skins.map((skin) =>
-        new EmbedBuilder()
-          .setTitle(skin.name)
-          .setColor(0xd81f30)
-          .setThumbnail(skin.icon)
-      );
+      const embed = princessEmbed()
+        .setTitle("👑 오늘의 상점")
+        .setDescription(shop.skins.map((s) => `• ${s.name}`).join("\n"))
+        .setThumbnail(shop.skins[0]?.icon ?? null);
 
       await interaction.editReply({
-        content: `**${resolved.account.riotUsername}**의 오늘 상점, 공주가 챙겨왔어요 · 다음 갱신 <t:${resetAt}:R>`,
-        embeds,
+        content: `**${resolved.account.riotUsername}**의 오늘 상점을 보여드릴게요 · 다음 갱신 <t:${resetAt}:R>`,
+        embeds: [embed],
       });
     } catch (err) {
       if (err instanceof SessionExpiredError) {

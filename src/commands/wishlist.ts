@@ -1,8 +1,9 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { prisma } from "../db/prisma.js";
 import { getSkinLevel, searchSkinLevels } from "../riot/skinMetadata.js";
 import { addToWishlist, listWishlist, removeFromWishlist } from "../services/wishlistService.js";
 import type { Command } from "../types.js";
+import { princessEmbed } from "./_embed.js";
 import { resolveAccount } from "./_shared.js";
 
 function accountOption(opt: import("discord.js").SlashCommandStringOption) {
@@ -112,9 +113,8 @@ export const command: Command = {
       return;
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(`${account.riotUsername}을 위해 공주가 맡아둔 것들`)
-      .setColor(0xd81f30)
+    const embed = princessEmbed()
+      .setTitle(`👑 ${account.riotUsername}을 위해 공주가 맡아둔 것들`)
       .setDescription(items.map((i) => `• ${i.skinName}`).join("\n"));
 
     await interaction.reply({ embeds: [embed], ephemeral: true });

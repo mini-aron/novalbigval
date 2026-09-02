@@ -1,8 +1,8 @@
 {
-  "name": "daebal",
+  "name": "sage-gondyu",
   "version": "0.1.0",
   "private": true,
-  "description": "대발이 — 라이엇 계정 로그인 기반 발로란트 개인 상점 조회 및 위시리스트 알림 디스코드 봇",
+  "description": "세이지곤듀 — 라이엇 계정 로그인 기반 발로란트 개인 상점 조회 및 위시리스트 알림 디스코드 봇",
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",

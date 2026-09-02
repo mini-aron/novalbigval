@@ -1,5 +1,6 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import type { Command } from "../types.js";
+import { princessEmbed } from "./_embed.js";
 
 const RULES = [
   "스파이크는 좋아하지 않으니 억지로 드리지 마세요. 뱉어버린답니다.",
@@ -15,9 +16,11 @@ export const command: Command = {
     .setDescription("세이지 공주님을 모시는 방법을 알려드립니다."),
 
   async execute(interaction) {
-    const embed = new EmbedBuilder()
+    const embed = princessEmbed()
       .setTitle("👑 세이지 공주님을 모시는 방법")
-      .setColor(0xd81f30)
+      .setThumbnail(
+        "https://media.valorant-api.com/agents/569fdd95-4d10-43ab-ca70-79becc718b46/fullportrait.png"
+      )
       .setDescription(RULES.map((r, i) => `${i + 1}. ${r}`).join("\n"));
 
     await interaction.reply({ embeds: [embed] });

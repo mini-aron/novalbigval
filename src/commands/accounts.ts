@@ -1,7 +1,8 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { prisma } from "../db/prisma.js";
 import { MAX_ACCOUNTS_PER_USER } from "../services/accountService.js";
 import type { Command } from "../types.js";
+import { princessEmbed } from "./_embed.js";
 
 export const command: Command = {
   data: new SlashCommandBuilder()
@@ -22,9 +23,8 @@ export const command: Command = {
       return;
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle("공주가 기억하는 계정")
-      .setColor(0xd81f30)
+    const embed = princessEmbed()
+      .setTitle("👑 공주가 기억하는 계정")
       .setDescription(`${accounts.length} / ${MAX_ACCOUNTS_PER_USER}개를 기억하고 있어요`)
       .addFields(
         accounts.map((a) => ({

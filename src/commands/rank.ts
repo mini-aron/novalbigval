@@ -1,6 +1,7 @@
-import { EmbedBuilder, SlashCommandBuilder } from "discord.js";
+import { SlashCommandBuilder } from "discord.js";
 import { getRankInfo } from "../services/statsService.js";
 import type { Command } from "../types.js";
+import { princessEmbed } from "./_embed.js";
 import { resolveStatsErrorMessage } from "./_shared.js";
 
 export const command: Command = {
@@ -17,9 +18,7 @@ export const command: Command = {
 
     try {
       const rank = await getRankInfo(riotId);
-      const embed = new EmbedBuilder()
-        .setTitle(`${rank.gameName}#${rank.tagLine}`)
-        .setColor(0xd81f30);
+      const embed = princessEmbed().setTitle(`${rank.gameName}#${rank.tagLine}`);
 
       if (!rank.hasCompetitiveData) {
         embed.setDescription("아직 경쟁전 기록이 없는걸요.");
