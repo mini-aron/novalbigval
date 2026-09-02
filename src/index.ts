@@ -1,10 +1,16 @@
 import "dotenv/config";
 import { Client, Events, GatewayIntentBits, Partials } from "discord.js";
 import { commands } from "./commands/index.js";
+import { textTriggers } from "./features/textTriggers.js";
 import { initScheduler, startAllSchedules } from "./scheduler/wishlistScheduler.js";
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.DirectMessages],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+  ],
   partials: [Partials.Channel],
 });
 
@@ -40,6 +46,17 @@ client.on(Events.InteractionCreate, async (interaction) => {
     } catch (err) {
       console.error(err);
     }
+  }
+});
+
+client.on(Events.MessageCreate, async (message) => {
+  if (message.author.bot) return;
+  const trigger = textTriggers.find((t) => t.test(message.content));
+  if (!trigger) return;
+  try {
+    await trigger.handle(message);
+  } catch (err) {
+    console.error(err);
   }
 });
 
