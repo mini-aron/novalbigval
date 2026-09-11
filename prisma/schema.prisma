@@ -51,3 +51,28 @@ model ServiceAccount {
   encryptedCookie String
   lastLoginAt     DateTime @default(now())
 }
+
+// 평문 채팅 트리거로 등록하는 커스텀 응답. "세이지 배워 <트리거> <대답>"으로 등록하면
+// 이후 "세이지 <트리거>"라고 부를 때 <대답>을 그대로 돌려준다. guildKey는 서버(길드) ID,
+// DM에서 배운 경우는 "dm" 고정값을 쓴다(서버 간 트리거가 섞이지 않도록).
+model LearnedPhrase {
+  id        String   @id @default(cuid())
+  guildKey  String
+  trigger   String
+  response  String
+  createdAt DateTime @default(now())
+
+  @@unique([guildKey, trigger])
+  @@index([guildKey])
+}
+
+// "세이지 오늘의 메뉴" 추천용 후보. 누구나 "세이지 메뉴 추가 <메뉴>"로 계속 늘릴 수 있다.
+model MenuItem {
+  id       String   @id @default(cuid())
+  guildKey String
+  name     String
+  addedAt  DateTime @default(now())
+
+  @@unique([guildKey, name])
+  @@index([guildKey])
+}
