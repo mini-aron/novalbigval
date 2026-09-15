@@ -9,8 +9,8 @@ const REMOVE_PHRASE = "세이지 메뉴 삭제";
 const LIST_PHRASE = "세이지 메뉴 목록";
 const RECOMMEND_PHRASE = "세이지 오늘의 메뉴";
 
-function guildKeyOf(message: Message): string {
-  return message.guildId ?? "dm";
+function guildKeyOf(): string {
+  return "global";
 }
 
 function extractArg(content: string, phrase: string): string {
@@ -27,7 +27,7 @@ async function handleAdd(message: Message): Promise<void> {
     await message.reply("어떤 메뉴를 추가할지 알려주세요. 예: `세이지 메뉴 추가 김치찌개`");
     return;
   }
-  const added = await addMenuItem(guildKeyOf(message), name);
+  const added = await addMenuItem(guildKeyOf(), name);
   await message.reply(
     added ? `**${name}**, 오늘의 메뉴 후보로 잘 챙겨둘게요!` : `**${name}**는 이미 후보에 있는걸요.`
   );
@@ -39,12 +39,12 @@ async function handleRemove(message: Message): Promise<void> {
     await message.reply("어떤 메뉴를 뺄지 알려주세요. 예: `세이지 메뉴 삭제 김치찌개`");
     return;
   }
-  const removed = await removeMenuItem(guildKeyOf(message), name);
+  const removed = await removeMenuItem(guildKeyOf(), name);
   await message.reply(removed ? `**${name}**, 후보에서 빼드릴게요.` : `**${name}**는 원래 후보에 없었는걸요.`);
 }
 
 async function handleList(message: Message): Promise<void> {
-  const items = await listMenuItems(guildKeyOf(message));
+  const items = await listMenuItems(guildKeyOf());
   if (items.length === 0) {
     await message.reply("아직 후보로 챙겨둔 메뉴가 없는걸요. `세이지 메뉴 추가 <메뉴>`로 알려주세요.");
     return;
@@ -56,7 +56,7 @@ async function handleList(message: Message): Promise<void> {
 }
 
 async function handleRecommend(message: Message): Promise<void> {
-  const picked = await pickRandomMenuItem(guildKeyOf(message));
+  const picked = await pickRandomMenuItem(guildKeyOf());
   if (!picked) {
     await message.reply("아직 후보가 하나도 없는걸요. `세이지 메뉴 추가 <메뉴>`로 먼저 알려주세요.");
     return;
