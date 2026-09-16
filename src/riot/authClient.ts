@@ -5,7 +5,9 @@ const AUTH_BASE = "https://auth.riotgames.com";
 const CLIENT_ID = "play-valorant-web-prod";
 const REDIRECT_URI = "https://playvalorant.com/opt_in";
 
-function parseTokensFromUri(uri: string): RiotTokens {
+export const LINK_LOGIN_NO_SESSION = "linklogin-no-session";
+
+export function parseTokensFromUri(uri: string): RiotTokens {
   const fragment = uri.split("#")[1] ?? "";
   const params = new URLSearchParams(fragment);
   const accessToken = params.get("access_token");
@@ -135,4 +137,18 @@ export async function reauthenticate(ssid: string): Promise<ReauthResult> {
   const newSsid = jar.get("ssid") ?? ssid;
 
   return { tokens: parseTokensFromUri(location), ssid: newSsid };
+}
+
+// /login이 auth_failure로 막히는(캡차·모바일 푸시 보호) 계정을 위한 대체 경로.
+// 사용자를 Riot의 실제 RSO 로그인 페이지로 직접 보내서, 캡차·2FA·모바일 승인을
+// 전부 본인이 그 화면에서 처리하게 한다. 비밀번호는 봇을 거치지 않는다.
+export function buildLinkLoginUrl(): string {
+  const params = new URLSearchParams({
+    redirect_uri: REDIRECT_URI,
+    client_id: CLIENT_ID,
+    response_type: "token id_token",
+    scope: "account openid",
+    nonce: "1",
+  });
+  return `${AUTH_BASE}/authorize?${params.toString()}`;
 }
