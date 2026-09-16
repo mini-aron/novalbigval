@@ -1,6 +1,8 @@
 import { SlashCommandBuilder, type DMChannel } from "discord.js";
+import { LINK_LOGIN_NO_SESSION } from "../riot/authClient.js";
 import { scheduleAccount } from "../scheduler/wishlistScheduler.js";
 import { AccountLimitError, AccountOwnedByAnotherUserError, finalizeLogin } from "../services/accountService.js";
+import { cacheFreshTokens } from "../services/riotSession.js";
 import type { Command } from "../types.js";
 import { runDmLogin } from "./_dmLogin.js";
 
@@ -31,10 +33,19 @@ export const command: Command = {
 
     try {
       const account = await finalizeLogin(interaction.user.id, outcome.tokens, outcome.ssid);
-      scheduleAccount(account.id);
-      await dm.send(
-        `✅ **${account.riotUsername}**, 이제 공주와 인연이 닿았어요. /shop 으로 오늘 상점부터 보여드릴까요?`
-      );
+      cacheFreshTokens(account.id, outcome.tokens);
+
+      if (outcome.ssid === LINK_LOGIN_NO_SESSION) {
+        await dm.send(
+          `✅ **${account.riotUsername}**, 이제 공주와 인연이 닿았어요. 지금 바로 /shop 은 볼 수 있는데, ` +
+            "이 방식으로 이었기 때문에 자동 알림은 안 걸려있고, 시간이 지나면 다시 /login 해주셔야 해요."
+        );
+      } else {
+        scheduleAccount(account.id);
+        await dm.send(
+          `✅ **${account.riotUsername}**, 이제 공주와 인연이 닿았어요. /shop 으로 오늘 상점부터 보여드릴까요?`
+        );
+      }
     } catch (err) {
       if (err instanceof AccountLimitError || err instanceof AccountOwnedByAnotherUserError) {
         await dm.send(err.message);
