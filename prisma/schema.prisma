@@ -52,6 +52,24 @@ model ServiceAccount {
   lastLoginAt     DateTime @default(now())
 }
 
+// 사용자가 등록한 계정 (상점 조회용).
+// RiotAccount는 로그인 과정이 DM으로 복잡하지만, ShopAccount는
+// 한 번만 /shoplogin으로 등록하면 이후 /shop으로 바로 조회 가능.
+// 본인이 등록한 계정이므로 본인만 조회하거나, 설정에 따라 공유 가능.
+model ShopAccount {
+  id              String   @id @default(cuid())
+  userId          String   @unique  // Discord 사용자 (1사용자 = 1계정)
+  puuid           String   @unique
+  region          String
+  shard           String
+  riotUsername    String
+  encryptedCookie String
+  lastLoginAt     DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+}
+
 // 평문 채팅 트리거로 등록하는 커스텀 응답. "세이지 배워 <트리거> <대답>"으로 등록하면
 // 이후 "세이지 <트리거>"라고 부를 때 <대답>을 그대로 돌려준다. guildKey는 서버(길드) ID,
 // DM에서 배운 경우는 "dm" 고정값을 쓴다(서버 간 트리거가 섞이지 않도록).
